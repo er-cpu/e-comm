@@ -1,0 +1,71 @@
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">Edit Product</h2>
+    </x-slot>
+
+    <div class="py-12">
+        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white rounded-lg shadow p-6">
+                <form action="{{ route('admin.products.update', $product) }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    @method('PUT')
+
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700">Name</label>
+                        <input type="text" name="name" value="{{ old('name', $product->name) }}" class="mt-1 block w-full rounded border-gray-300" required>
+                        @error('name') <p class="text-red-500 text-xs mt-1">{{ session($message) }}</p> @enderror
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700">Category</label>
+                        <select name="category_id" class="mt-1 block w-full rounded border-gray-300">
+                            <option value="">No Category</option>
+                            @foreach($categories as $category)
+                                <option value="{{ $category->id }}" {{ old('category_id', $product->category_id) == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700">Description</label>
+                        <textarea name="description" rows="4" class="mt-1 block w-full rounded border-gray-300">{{ old('description', $product->description) }}</textarea>
+                    </div>
+
+                    <div class="mb-4 grid grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Price (Tsh)</label>
+                            <input type="number" name="price" value="{{ old('price', $product->price) }}" step="0.01" min="0" class="mt-1 block w-full rounded border-gray-300" required>
+                            @error('price') <p class="text-red-500 text-xs mt-1">{{ session($message) }}</p> @enderror
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Discount %</label>
+                            <input type="number" name="discount_percent" value="{{ old('discount_percent', $product->discount_percent) }}" min="0" max="100" class="mt-1 block w-full rounded border-gray-300">
+                            @error('discount_percent') <p class="text-red-500 text-xs mt-1">{{ session($message) }}</p> @enderror
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Stock</label>
+                            <input type="number" name="stock" value="{{ old('stock', $product->stock) }}" min="0" class="mt-1 block w-full rounded border-gray-300" required>
+                            @error('stock') <p class="text-red-500 text-xs mt-1">{{ session($message) }}</p> @enderror
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700">Image</label>
+                        @if($product->image)
+                            <div class="mb-2">
+                                <img src="{{ Storage::url($product->image) }}" class="w-32 h-32 object-cover rounded">
+                            </div>
+                        @endif
+                        <input type="file" name="image" accept="image/*" class="mt-1 block w-full">
+                        @error('image') <p class="text-red-500 text-xs mt-1">{{ session($message) }}</p> @enderror
+                    </div>
+
+                    <div class="flex gap-4">
+                        <button type="submit" class="bg-indigo-500 text-white px-6 py-2 rounded hover:bg-indigo-600">Update</button>
+                        <a href="{{ route('admin.products') }}" class="bg-gray-500 text-white px-6 py-2 rounded hover:bg-gray-600">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</x-app-layout>
