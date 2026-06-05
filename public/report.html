@@ -97,23 +97,30 @@ body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #1e293b; li
 <h3>1.1 Background</h3>
 <p>SmartTrade Africa Ltd is a rapidly growing digital commerce company based in Tanzania that plans to launch a modern e-commerce platform allowing customers to buy products online via both mobile and web applications. The company has identified critical trust and security challenges including fake customer accounts, online payment fraud, unauthorized access attempts, identity theft, customer distrust toward online payments, and data privacy concerns.</p>
 
+<p>In the Tanzanian and broader East African e-commerce landscape, trust remains one of the biggest barriers to adoption. Many potential customers are hesitant to provide personal information or make online payments due to fears of fraud and data misuse. SmartTrade Africa Ltd recognizes that addressing these concerns is not merely a technical requirement but a fundamental business necessity. Without customer trust, even the most feature-rich platform will fail to achieve meaningful adoption and transaction volume.</p>
+
+<p>The platform is designed to serve both urban and peri-urban customers across Tanzania, where smartphone penetration is growing rapidly but digital literacy varies widely. This diversity requires the platform to be intuitive enough for first-time online shoppers while providing the advanced security features that experienced users demand. The solution must bridge this gap by making security transparent and trust visible at every interaction point.</p>
+
 <h3>1.2 Problem Statement</h3>
-<p>Traditional e-commerce platforms face significant challenges in building and maintaining customer trust. Security breaches, identity theft, and payment fraud have eroded consumer confidence in online transactions. SmartTrade Africa Ltd requires a comprehensive solution that addresses these challenges through the integration of trusted computing technologies, biometric authentication, secure payment processing, and trust management principles.</p>
+<p>Traditional e-commerce platforms face significant challenges in building and maintaining customer trust. Security breaches, identity theft, and payment fraud have eroded consumer confidence in online transactions. In the East African context, additional challenges include limited familiarity with online payments, concerns about data privacy across borders, and the prevalence of mobile money fraud. SmartTrade Africa Ltd requires a comprehensive solution that addresses these challenges through the integration of trusted computing technologies, biometric authentication, secure payment processing, and trust management principles.</p>
+
+<p>The core tension in e-commerce trust management is that users must provide sensitive information (payment details, personal data, delivery addresses) before they have established trust in the platform. This "trust paradox" requires the platform to demonstrate its trustworthiness proactively through visible security indicators, transparent policies, and verifiable security mechanisms. The platform addresses this by making trust visible through multiple layers: biometric authentication badges, secure payment gateway logos, and clearly communicated security policies that users can review before committing to a transaction.</p>
 
 <h3>1.3 Project Objectives</h3>
+<p>Each objective addresses a specific dimension of the trust and security challenge:</p>
 <ul>
-    <li>Develop a secure e-commerce web application with comprehensive features</li>
-    <li>Integrate Trusted Computing Platform (TCP) concepts for secure session and device management</li>
-    <li>Implement WebAuthn-based fingerprint biometric authentication</li>
-    <li>Integrate multiple simulated and real payment APIs (Stripe, PayPal, Mock)</li>
-    <li>Apply trust management principles throughout the system</li>
-    <li>Improve customer trust and user confidence through transparent security indicators</li>
-    <li>Apply TAM/UTAUT concepts to improve technology adoption and usability</li>
-    <li>Implement secure software development practices (CSRF, XSS, SQL injection prevention)</li>
+    <li><strong>Develop a secure e-commerce web application with comprehensive features:</strong> Build a full-featured platform that meets the operational needs of both customers and administrators while embedding security at every layer of the architecture rather than treating it as an add-on.</li>
+    <li><strong>Integrate Trusted Computing Platform (TCP) concepts for secure session and device management:</strong> Apply hardware-rooted trust concepts to the web application context, ensuring that sessions are securely managed and devices can be verified. This includes secure token handling, session integrity monitoring, and device fingerprinting.</li>
+    <li><strong>Implement WebAuthn-based fingerprint biometric authentication:</strong> Replace or augment password-based authentication with phishing-resistant biometric authentication using the FIDO2/WebAuthn standard, which uses public-key cryptography to eliminate the risk of credential theft.</li>
+    <li><strong>Integrate multiple simulated and real payment APIs (Stripe, PayPal, Mock):</strong> Provide payment flexibility while maintaining security through the Strategy Pattern, which allows the system to switch between payment gateways without changing core business logic. The Mock gateway enables testing without financial risk.</li>
+    <li><strong>Apply trust management principles throughout the system:</strong> Embed trust-building mechanisms at every user touchpoint, from registration through checkout to post-purchase support, creating a consistent narrative of security and reliability.</li>
+    <li><strong>Improve customer trust and user confidence through transparent security indicators:</strong> Display visible trust signals (security badges, authentication status, secure payment labels) throughout the user interface so that users can continuously verify the security of their session.</li>
+    <li><strong>Apply TAM/UTAUT concepts to improve technology adoption and usability:</strong> Design the user experience based on established technology acceptance theories to ensure that security features do not come at the cost of usability, addressing both perceived usefulness and perceived ease of use.</li>
+    <li><strong>Implement secure software development practices (CSRF, XSS, SQL injection prevention):</strong> Follow OWASP guidelines and Laravel security best practices to protect against the most common web application vulnerabilities, ensuring the platform is resilient against attacks.</li>
 </ul>
 
 <h3>1.4 Scope</h3>
-<p>The application covers user registration and authentication (including biometrics), product catalog management, shopping cart and wishlist functionality, secure checkout with multiple payment gateways, order management, customer reviews and ratings, admin dashboard with analytics, and comprehensive trust and security features.</p>
+<p>The application covers user registration and authentication (including biometrics), product catalog management, shopping cart and wishlist functionality, secure checkout with multiple payment gateways, order management, customer reviews and ratings, admin dashboard with analytics, and comprehensive trust and security features. The scope deliberately excludes native mobile application development (which is recommended as a future enhancement) and focuses on delivering a responsive web application that works seamlessly across desktop and mobile browsers. The biometric authentication leverages browser-native WebAuthn APIs, which means it works on any device with a compatible browser and biometric sensor without requiring a separate mobile application.</p>
 </div>
 
 <!-- CHAPTER 2: SYSTEM ARCHITECTURE -->
@@ -135,7 +142,11 @@ body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #1e293b; li
 </table>
 
 <h3>2.2 System Architecture Diagram</h3>
-<p>The application follows Laravel's MVC (Model-View-Controller) architecture with a service layer for payment gateway abstraction:</p>
+<p>The application follows Laravel's MVC (Model-View-Controller) architecture with a service layer for payment gateway abstraction. The MVC pattern was chosen because it provides a clean separation of concerns: Models handle data and business logic, Views handle presentation, and Controllers handle request flow. This separation is critical for security because it allows each layer to implement its own security measures independently. For example, Models use Eloquent ORM to prevent SQL injection, Views use Blade's automatic escaping to prevent XSS, and Controllers use middleware and validation to enforce access control.</p>
+
+<p>The service layer pattern (specifically the Strategy Pattern for payment gateways) adds an additional level of abstraction that decouples the payment processing logic from the controllers. This means new payment gateways can be added by implementing a single interface (<code>PaymentGatewayInterface</code>) without modifying any existing code — a textbook example of the Open/Closed Principle from SOLID design.</p>
+
+<p>The request flow through the architecture:</p>
 <div class="code-block">
 User Browser / Device
     |
@@ -256,7 +267,18 @@ Services Layer:
 <h2>5. Payment API Integration</h2>
 
 <h3>5.1 Multi-Gateway Architecture</h3>
-<p>The payment system uses the Strategy Pattern via <code>PaymentService</code> and <code>PaymentGatewayInterface</code>, allowing seamless switching between gateways:</p>
+<p>The payment system uses the Strategy Pattern via <code>PaymentService</code> and <code>PaymentGatewayInterface</code>, allowing seamless switching between gateways. The Strategy Pattern is particularly well-suited for payment processing because it allows the system to define a family of algorithms (payment gateways), encapsulate each one, and make them interchangeable. The client code (<code>PaymentController</code>) interacts only with the interface, never with specific gateway implementations. This means that adding a new payment gateway requires only creating a new class that implements the interface — no changes to controllers, views, or business logic are needed.</p>
+
+<p>The <code>PaymentGatewayInterface</code> defines three key methods that every gateway must implement:</p>
+<ul>
+    <li><code>processPayment(Order $order, User $user): PaymentResult</code> — Initiates the payment transaction and returns a result object with status, transaction reference, and redirect URL if applicable.</li>
+    <li><code>verifyPayment(string $transactionRef): PaymentStatus</code> — Verifies the status of a transaction using the gateway's lookup API to ensure the payment was completed successfully before confirming the order.</li>
+    <li><code>refundPayment(Payment $payment): PaymentResult</code> — Processes a refund through the gateway's refund API, which is used by the admin panel for order disputes and cancellations.</li>
+</ul>
+
+<p>The <code>PaymentService</code> acts as a factory and orchestrator. When a user selects a gateway during checkout, the service resolves the appropriate gateway implementation based on the selected key (e.g., 'stripe', 'paypal', 'mock'). This resolution can be configured dynamically through the database or configuration, allowing administrators to enable or disable specific gateways without code changes.</p>
+
+<p>Current gateway implementations and their status:</p>
 <table>
 <tr><th>Gateway</th><th>Status</th><th>Description</th></tr>
 <tr><td>Stripe</td><td><span class="tag tag-green">Active</span></td><td>Real credit/debit card processing via Stripe Checkout Sessions (test mode with pk_test/sk_test keys configured)</td></tr>
@@ -274,13 +296,16 @@ Services Layer:
 </div>
 
 <h3>5.3 Mock Payment Flow</h3>
+<p>The Mock Gateway is a fully functional payment simulator that demonstrates the complete payment lifecycle without processing real transactions. It is the default gateway for development and testing. The complete flow involves the following steps:</p>
 <ol>
-    <li>User clicks "Mock Payment (Test)" on gateway selection page</li>
-    <li>System creates a pending payment record and redirects to mock confirmation page</li>
-    <li>User clicks "Simulate Successful Payment" to complete the transaction</li>
-    <li>Order is created, stock is decremented, cart is cleared, notification is sent</li>
-    <li>User is redirected to order detail page with success message</li>
+    <li><strong>Gateway Selection:</strong> User clicks "Mock Payment (Test)" on the gateway selection page at <code>/checkout</code>. The system validates cart contents and stock availability before proceeding.</li>
+    <li><strong>Payment Record Creation:</strong> The system creates a <code>Payment</code> record in the database with status 'pending', amount, gateway set to 'mock', and a unique transaction reference. This record is linked to the user and the pending order.</li>
+    <li><strong>Redirect to Confirmation:</strong> The user is redirected to <code>/payment/mock/confirm/{ref}</code> where they see a simulated payment interface showing the order summary, amount, and two action buttons: "Simulate Successful Payment" and "Cancel Payment".</li>
+    <li><strong>Payment Simulation:</strong> When the user clicks "Simulate Successful Payment", the system executes the complete post-payment workflow: the payment status is updated to 'completed', the order status is set to 'confirmed', product stock quantities are decremented atomically (using database transactions to prevent race conditions), the shopping cart is cleared, and a database notification is sent to the user confirming the order.</li>
+    <li><strong>Redirection:</strong> The user is redirected to the order detail page at <code>/orders/{id}</code> with a success message and the option to view or download a PDF receipt.</li>
 </ol>
+<p>The Cancel Payment path demonstrates the system's ability to handle payment failures gracefully: the payment is marked as 'failed', the order is cancelled, and the user is redirected back to their cart with a message explaining that the payment was not completed.</p>
+<p>This flow mirrors exactly what would happen with a real payment gateway, except no actual financial transaction takes place. This makes it an invaluable tool for testing the complete order lifecycle, from checkout through payment confirmation, stock management, and notification delivery.</p>
 
 <div class="screenshot-box">
     <div class="label">[SCREENSHOT: Mock Payment Confirmation Page]</div>
@@ -315,27 +340,48 @@ Services Layer:
 <h3>6.1 Technology: WebAuthn / FIDO2</h3>
 <p>The application implements the W3C Web Authentication API (WebAuthn) standard using the <code>lbuchs/webauthn</code> PHP library. WebAuthn is a phishing-resistant authentication standard that allows users to authenticate using biometric sensors (fingerprint, face recognition), platform authenticators (Windows Hello, Apple Touch ID), or external security keys.</p>
 
+<p>Unlike traditional password-based authentication, WebAuthn uses asymmetric (public-key) cryptography. When a user registers a biometric credential, their device generates a public-private key pair. The private key never leaves the device — it is stored in secure hardware (TPM on Windows, Secure Enclave on Apple devices, TrustZone on Android). The public key is sent to the server and stored in the database. During authentication, the server sends a challenge (random bytes), and the device signs this challenge with the private key. The server verifies the signature using the stored public key. This means that even if an attacker gains access to the server database, they cannot impersonate the user because the private key never leaves the user's device and cannot be extracted from the secure hardware.</p>
+
+<p>WebAuthn is fundamentally phishing-resistant because the authentication response is scoped to the specific origin (domain). A WebAuthn credential registered for <code>hesmb.com</code> will not work on <code>hesmb-login.com</code> because the browser validates the origin as part of the authentication ceremony. This eliminates the entire class of phishing attacks that plague password-based authentication.</p>
+
 <h3>6.2 Key Features</h3>
 <ul>
-    <li><strong>Biometric Registration:</strong> Users enroll their fingerprint via browser's native credential management API</li>
-    <li><strong>Biometric Authentication:</strong> One-tap fingerprint login after initial password authentication</li>
-    <li><strong>Credential Management:</strong> Users can view, add, and remove enrolled biometric credentials</li>
-    <li><strong>Remote Setup:</strong> Token-based biometric enrollment links for device setup</li>
-    <li><strong>Phone Verification:</strong> OTP-based phone verification before biometric enrollment</li>
-    <li><strong>Device Support Check:</strong> Automatic detection of WebAuthn support on the user's device</li>
+    <li><strong>Biometric Registration:</strong> Users enroll their fingerprint via browser's native credential management API. The browser handles the interaction with the platform's biometric hardware (Windows Hello, Touch ID, Android fingerprint), ensuring that the biometric data never leaves the device. What is transmitted to the server is solely the public key and attestation data.</li>
+    <li><strong>Biometric Authentication:</strong> One-tap fingerprint login after initial password authentication. The user can authenticate with a single fingerprint scan, eliminating the need to remember or type passwords.</li>
+    <li><strong>Credential Management:</strong> Users can view, add, and remove enrolled biometric credentials from their profile page. Each credential is identified by its creation date and a friendly name, allowing users to manage multiple devices.</li>
+    <li><strong>Remote Setup:</strong> Token-based biometric enrollment links for device setup. The system can generate a unique, time-limited token that allows a user to register a biometric credential from a different device. This is useful when setting up a new phone or computer without requiring a password entry on that device.</li>
+    <li><strong>Phone Verification:</strong> OTP-based phone verification before biometric enrollment. To ensure that biometric enrollment is protected against unauthorized access, users must verify their phone number via a one-time password (OTP) before they can register a fingerprint. This adds an additional layer of security to the enrollment process.</li>
+    <li><strong>Device Support Check:</strong> Automatic detection of WebAuthn support on the user's device via JavaScript. If the user's browser or device does not support WebAuthn (e.g., older browsers), the biometric options are hidden and the user is informed that biometric authentication is not available on their current device.</li>
 </ul>
 
 <h3>6.3 Implementation Details</h3>
-<p>The biometric system works through a challenge-response protocol:</p>
+<p>The biometric system works through a challenge-response protocol that involves both client-side JavaScript and server-side PHP code. The complete cryptographic flow:</p>
 <div class="code-block">
-1. Server generates a cryptographic challenge (random bytes)
-2. Client creates a credential using the device's authenticator (fingerprint sensor)
-3. Client returns the credential's public key and attestation
-4. Server stores the public key associated with the user account
-5. On subsequent logins, server challenges the client to sign with the private key
-6. Client uses fingerprint to authorize the signing operation
-7. Server verifies the signature against the stored public key
+=== Registration Flow ===
+1. Server generates a random 32-byte challenge and creates a 
+   WebAuthn credential creation options object
+2. Browser's navigator.credentials.create() is called, which 
+   prompts the user for fingerprint/biometric verification
+3. Device's secure hardware generates an asymmetric key pair 
+   (ECDSA P-256 or RSA) and returns the public key, 
+   credential ID, and attestation
+4. Server receives the credential and verifies the attestation
+   (checks that the authenticator is genuine)
+5. Server stores the credential ID, public key, and counter 
+   value in the 'credentials' table, associated with the user
+
+=== Authentication Flow ===
+1. Server generates a random 32-byte challenge and retrieves 
+   the user's stored credential IDs
+2. Browser's navigator.credentials.get() is called with the 
+   challenge and credential IDs
+3. Device finds the matching credential, prompts for 
+   fingerprint, and signs the challenge with the private key
+4. Server verifies the signature using the stored public key, 
+   checks the counter value for cloned credentials, 
+   and authenticates the user
 </div>
+<p>The PHP library <code>lbuchs/webauthn</code> handles the low-level cryptographic operations including: CBOR decoding of the attestation object, signature verification using the COSE key format, and counter-based clone detection. The counter is an anti-cloning mechanism: each time the authenticator is used, its internal counter increments. If the server receives a counter value lower than the stored value, it indicates that the credential may have been cloned and the authentication is rejected.</p>
 
 <h3>6.4 Enrolling a Fingerprint</h3>
 
@@ -372,16 +418,29 @@ Services Layer:
 </table>
 
 <h3>7.2 Session Security</h3>
-<p>The session driver is set to <code>database</code> for persistence and auditability. Session lifetime is 120 minutes. The session ID is regenerated after login to prevent session fixation attacks. Each session record in the database includes the user ID, IP address, user agent, and last activity timestamp for monitoring.</p>
+<p>The session driver is set to <code>database</code> for persistence and auditability. Unlike file-based sessions (Laravel's default), database sessions persist across server restarts and can be centrally managed in a load-balanced environment. The session lifetime is configured to 120 minutes via the <code>SESSION_LIFETIME</code> environment variable, after which the user is forced to re-authenticate.</p>
+
+<p>Session fixation is prevented by regenerating the session ID after every successful login (Laravel's <code>regenerate()</code> method on the session). This ensures that any session ID set by an attacker before login is invalidated when the user authenticates.</p>
+
+<p>Each session record in the <code>sessions</code> database table stores the following metadata for security auditing:</p>
+<ul>
+    <li><strong>User ID:</strong> Links the session to the authenticated user for accountability</li>
+    <li><strong>IP Address:</strong> Captured for geographic analysis and anomaly detection (e.g., a session that suddenly appears from a different country)</li>
+    <li><strong>User Agent:</strong> Provides browser and operating system information for device identification</li>
+    <li><strong>Last Activity:</strong> Timestamp of the most recent request, used to enforce idle timeout</li>
+    <li><strong>Payload:</strong> Encrypted session data stored as a BLOB</li>
+</ul>
+
+<p>The session security implementation also includes middleware that validates the session integrity on every request. If the user's IP address or user agent changes significantly between requests (indicating possible session hijacking), the session can be invalidated and the user logged out.</p>
 
 <h3>7.3 Token-Based Security</h3>
-<p>The application uses multiple token mechanisms:</p>
+<p>Token-based security provides proof of authorization for specific operations. Each token type has a distinct purpose and security profile:</p>
 <ul>
-    <li><strong>CSRF Tokens:</strong> Every form includes a CSRF token validated by Laravel's middleware</li>
-    <li><strong>Email Verification Tokens:</strong> Signed URLs for verifying email addresses</li>
-    <li><strong>Password Reset Tokens:</strong> Hashed tokens stored in the password_resets table</li>
-    <li><strong>Biometric Setup Tokens:</strong> 64-character random tokens for remote WebAuthn enrollment</li>
-    <li><strong>API Tokens:</strong> Session-based authentication for AJAX requests</li>
+    <li><strong>CSRF Tokens:</strong> Every form includes a CSRF token validated by Laravel's <code>VerifyCsrfToken</code> middleware. The token is generated per-session and automatically included in every form via the <code>@csrf</code> Blade directive. For AJAX requests, the token is read from a <code>&lt;meta&gt;</code> tag and sent in the <code>X-CSRF-TOKEN</code> header. The token is tied to the user session and expires when the session expires.</li>
+    <li><strong>Email Verification Tokens:</strong> Laravel's signed URLs provide tamper-proof verification links. The URL includes a signature (HMAC-SHA256) computed using the application key. Any modification to the URL invalidates the signature, causing the verification to fail. The URLs also include an expiration timestamp (default 60 minutes) to limit the window of opportunity.</li>
+    <li><strong>Password Reset Tokens:</strong> Hashed tokens stored in the <code>password_resets</code> table. The token is generated using <code>Str::random(60)</code> and hashed with bcrypt before storage, ensuring that even if the database is compromised, tokens cannot be reused or generated. Tokens expire after 60 minutes.</li>
+    <li><strong>Biometric Setup Tokens:</strong> 64-character random tokens (generated with <code>bin2hex(random_bytes(32))</code>) for remote WebAuthn enrollment. These tokens allow a user to register a biometric credential from a different device by entering the token. The token is one-time-use and expires after a configurable period (default 30 minutes).</li>
+    <li><strong>API Tokens:</strong> Session-based authentication for AJAX requests. The session cookie is automatically included in same-origin AJAX requests, and the CSRF token is sent in the request header. No separate API token mechanism is needed because the session provides authentication and the CSRF token provides authorization.</li>
 </ul>
 </div>
 
@@ -390,7 +449,16 @@ Services Layer:
 <h2>8. Trust Management Features</h2>
 
 <h3>8.1 Trust Indicators</h3>
-<p>The application prominently displays trust indicators across all pages to build customer confidence:</p>
+<p>The application prominently displays trust indicators across all pages to build customer confidence. Trust indicators serve a dual purpose: they provide real-time security status information to users, and they demonstrate the platform's commitment to security through visible investment. Research in e-commerce trust shows that users are more likely to complete transactions when they can see evidence of security measures. Each trust indicator is designed to be immediately visible without being intrusive, and they are consistently positioned so users learn where to look for security information.</p>
+
+<p>The trust indicator bar in the navigation (visible to authenticated users) displays three key indicators side by side:</p>
+<ul>
+    <li><strong>Fingerprint Verified Login</strong> (green badge): Only shown when the user has authenticated using WebAuthn biometric authentication. This confirms that the current session has been authenticated with a phishing-resistant biometric credential, which is stronger than password-only authentication.</li>
+    <li><strong>Secure Payment via Stripe</strong> (blue badge): Indicates that payment processing is handled by Stripe's PCI DSS Level 1 compliant infrastructure. This tells users that their payment information is processed by a globally recognized, audited payment processor rather than being stored on the platform's own servers.</li>
+    <li><strong>Trusted Session</strong> (purple badge): Confirms that the current session is protected by HTTPS, CSRF tokens, and database-backed session management with 120-minute timeout. This badge provides assurance that the connection is encrypted and the session is securely managed.</li>
+</ul>
+
+<p>The full set of trust indicators across the platform:</p>
 
 <table>
 <tr><th>Trust Indicator</th><th>Location</th><th>Description</th></tr>
@@ -450,42 +518,46 @@ Services Layer:
 <h2>9. Security Implementation</h2>
 
 <h3>9.1 Data Security</h3>
+<p>Data security protects the confidentiality, integrity, and availability of user data. The platform implements multiple layers of data protection, each addressing a specific threat vector:</p>
 <table>
-<tr><th>Measure</th><th>Implementation</th></tr>
-<tr><td>Password Hashing</td><td>bcrypt with 12 rounds (BCRYPT_ROUNDS=12 in .env)</td></tr>
-<tr><td>Password Validation</td><td>Minimum 8 characters via Laravel's Rules\Password with mixed case enforcement</td></tr>
-<tr><td>Data Encryption</td><td>Laravel's built-in encryption for sensitive data; APP_KEY used as encryption key</td></tr>
-<tr><td>Secure Communication</td><td>HTTPS-ready configuration with trusted proxies support</td></tr>
+<tr><th>Measure</th><th>Implementation</th><th>Why It Matters</th></tr>
+<tr><td>Password Hashing</td><td>bcrypt with 12 rounds (BCRYPT_ROUNDS=12 in .env)</td><td>bcrypt is a deliberately slow hash function that includes a work factor (12 rounds), making brute-force attacks computationally expensive. Even if the password database is compromised, attackers cannot reverse the hashes to recover plaintext passwords. Each hash also includes a unique salt, preventing rainbow table attacks.</td></tr>
+<tr><td>Password Validation</td><td>Minimum 8 characters via Laravel's Rules\Password with mixed case enforcement</td><td>Enforcing minimum length and character diversity requirements increases the entropy of user passwords, making them exponentially harder to crack. NIST SP 800-63 guidelines recommend prioritizing length over complexity, and a minimum of 8 characters provides a reasonable baseline against online guessing attacks.</td></tr>
+<tr><td>Data Encryption</td><td>Laravel's built-in encryption for sensitive data; APP_KEY used as encryption key</td><td>Laravel's encryption uses AES-256-CBC with a key derived from the APP_KEY environment variable. This encrypts data at rest in the database, ensuring that even if an attacker gains access to the database files, they cannot read sensitive information without the encryption key.</td></tr>
+<tr><td>Secure Communication</td><td>HTTPS-ready configuration with trusted proxies support</td><td>HTTPS encrypts all data in transit between the user's browser and the server, preventing man-in-the-middle attacks, session hijacking, and data interception on untrusted networks (such as public Wi-Fi). The trusted proxy configuration ensures correct HTTPS detection when behind load balancers or reverse proxies.</td></tr>
 </table>
 
 <h3>9.2 Authentication Security</h3>
+<p>Authentication is the first line of defense against unauthorized access. The platform implements defense-in-depth for authentication, meaning that multiple independent security controls must be bypassed for an attacker to gain access:</p>
 <ul>
-    <li><strong>Rate Limiting:</strong> 5 login attempts per minute using Laravel's RateLimiter</li>
-    <li><strong>Session Regeneration:</strong> Session ID regenerated after successful login</li>
-    <li><strong>Session Timeout:</strong> 120-minute session lifetime with forced re-authentication</li>
-    <li><strong>Email Verification:</strong> Required before accessing protected features</li>
-    <li><strong>Biometric Authentication:</strong> Phishing-resistant WebAuthn/FIDO2 protocol</li>
-    <li><strong>Password Confirmation:</strong> Re-authentication required before sensitive actions</li>
+    <li><strong>Rate Limiting:</strong> 5 login attempts per minute using Laravel's RateLimiter. This prevents brute-force password guessing attacks by temporarily locking the account after too many failed attempts. The rate limit applies per email address and per IP address, preventing both targeted attacks on specific accounts and distributed attacks across multiple accounts.</li>
+    <li><strong>Session Regeneration:</strong> Session ID regenerated after successful login. This prevents session fixation attacks, where an attacker tricks a user into using a session ID chosen by the attacker. By generating a new session ID after authentication, any pre-existing session fixation is invalidated.</li>
+    <li><strong>Session Timeout:</strong> 120-minute session lifetime with forced re-authentication. This limits the window of opportunity for an attacker who gains access to an unattended session. The timeout applies to both idle sessions (no activity for 120 minutes) and absolute sessions (total session lifetime).</li>
+    <li><strong>Email Verification:</strong> Required before accessing protected features. This ensures that the email address provided during registration actually belongs to the user, preventing registration with fake or mistyped email addresses. The verification link is a signed URL that expires after a configurable period.</li>
+    <li><strong>Biometric Authentication:</strong> Phishing-resistant WebAuthn/FIDO2 protocol. Unlike passwords, biometric credentials cannot be stolen through phishing because WebAuthn responses are scoped to the origin domain. Even if a user is tricked into visiting a fake login page, their biometric credential will not authenticate because the browser detects the domain mismatch.</li>
+    <li><strong>Password Confirmation:</strong> Re-authentication required before sensitive actions. High-risk actions (such as changing email, password, or enrolling biometric credentials) require the user to re-enter their password, even if they are already logged in. This prevents an attacker who has gained temporary access to an unattended session from making permanent changes to the account.</li>
 </ul>
 
 <h3>9.3 Application Security</h3>
+<p>Application security protects against vulnerabilities in the code itself. The OWASP Top 10 provides a framework for the most critical web application security risks, and the platform addresses each relevant risk:</p>
 <table>
-<tr><th>Vulnerability</th><th>Prevention Method</th></tr>
-<tr><td>SQL Injection</td><td>Eloquent ORM with parameterized queries (prepared statements); no raw SQL queries</td></tr>
-<tr><td>Cross-Site Scripting (XSS)</td><td>Blade's automatic {{ }} escaping; Content-Security-Policy headers</td></tr>
-<tr><td>CSRF</td><td>CSRF token on every form via @csrf directive; token validation middleware</td></tr>
-<tr><td>Input Validation</td><td>Form Request validation rules; server-side validation for all inputs</td></tr>
-<tr><td>Mass Assignment</td><td>Protected $fillable/$guarded properties on all models</td></tr>
-<tr><td>Path Traversal</td><td>Storage facade with proper disk configuration; no direct filesystem access</td></tr>
+<tr><th>Vulnerability</th><th>Prevention Method</th><th>Technical Explanation</th></tr>
+<tr><td>SQL Injection</td><td>Eloquent ORM with parameterized queries (prepared statements); no raw SQL queries</td><td>SQL injection occurs when user input is directly concatenated into SQL queries, allowing attackers to execute arbitrary database commands. Eloquent ORM uses PDO prepared statements which separate SQL structure from data — user input is always treated as data, never as executable SQL. The application strictly avoids raw SQL queries (<code>DB::raw()</code>, <code>whereRaw()</code>) in all production code paths.</td></tr>
+<tr><td>Cross-Site Scripting (XSS)</td><td>Blade's automatic {{ }} escaping; Content-Security-Policy headers</td><td>XSS allows attackers to inject malicious JavaScript into web pages viewed by other users. Laravel's Blade template engine automatically escapes all output using <code>{{ }}</code> which converts HTML special characters to their entity equivalents (e.g., <code>&lt;script&gt;</code> becomes <code>&amp;lt;script&amp;gt;</code>). When unescaped output is needed (<code>{!! !!}</code>), it is used only with trusted, server-generated content.</td></tr>
+<tr><td>CSRF</td><td>CSRF token on every form via @csrf directive; token validation middleware</td><td>Cross-Site Request Forgery tricks authenticated users into submitting unwanted actions. Every form and state-changing AJAX request includes a unique CSRF token that is validated by Laravel's <code>VerifyCsrfToken</code> middleware. The token is tied to the user's session and expires after a configurable timeout, preventing attackers from forging requests even if they know the token format.</td></tr>
+<tr><td>Input Validation</td><td>Form Request validation rules; server-side validation for all inputs</td><td>All user input is validated server-side before processing, using Laravel's validation rules. This prevents malformed data from reaching the database or business logic. Validation includes type checking, length limits, format validation (email, URL, phone), and business rule validation (stock availability, price consistency). Client-side validation is used only for user experience — server-side validation is the authoritative check.</td></tr>
+<tr><td>Mass Assignment</td><td>Protected $fillable/$guarded properties on all models</td><td>Mass assignment vulnerabilities allow attackers to set arbitrary model attributes by passing unexpected field names in requests. Each Eloquent model explicitly defines which attributes can be mass-assigned via the <code>$fillable</code> property. This ensures that even if an attacker adds extra fields to a request (e.g., <code>is_admin=1</code>), those fields are ignored by the model's <code>create()</code> and <code>update()</code> methods.</td></tr>
+<tr><td>Path Traversal</td><td>Storage facade with proper disk configuration; no direct filesystem access</td><td>Path traversal attacks attempt to read or write files outside the intended directory by including <code>../</code> sequences in file paths. The application uses Laravel's Storage facade which restricts file operations to configured disks. File uploads are stored with hashed filenames (generated by <code>$file->store()</code>), preventing attackers from guessing or traversing to other files.</td></tr>
 </table>
 
 <h3>9.4 Payment Security</h3>
+<p>Payment security is critical because it involves both financial assets and sensitive personal data. The platform follows the principle of data minimization — never collect or store data that is not absolutely necessary for the transaction:</p>
 <ul>
-    <li>No credit card numbers stored in the database or logs</li>
-    <li>All payment processing via gateway-hosted pages (Stripe Checkout, PayPal)</li>
-    <li>Transaction status verified end-to-end before order confirmation</li>
-    <li>Database transactions ensure atomicity (all-or-nothing order creation)</li>
-    <li>Payment records track complete audit trail with gateway references</li>
+    <li><strong>No credit card numbers stored in the database or logs:</strong> Credit card numbers (Primary Account Numbers, PANs) are never transmitted to or stored on the platform's servers. All card data entry happens on the payment gateway's PCI-compliant pages, which use iframes or redirects to ensure that the merchant server never sees the full PAN. This eliminates the risk of a database breach exposing financial data.</li>
+    <li><strong>All payment processing via gateway-hosted pages (Stripe Checkout, PayPal):</strong> The platform uses Stripe Checkout and PayPal Standard, which are hosted payment pages that handle the entire payment flow. The platform never directly handles card data, avoiding PCI DSS SAQ scope for the most stringent requirements. The platform only receives a payment token or transaction ID after processing is complete.</li>
+    <li><strong>Transaction status verified end-to-end before order confirmation:</strong> After a user completes payment on the gateway's page, the platform verifies the transaction status by calling the gateway's verification API (e.g., Stripe's <code>checkout.session.retrieve()</code>). This prevents users from simulating a successful payment without actually completing the transaction.</li>
+    <li><strong>Database transactions ensure atomicity (all-or-nothing order creation):</strong> Order creation involves multiple database operations: creating the order record, creating order items, updating product stock, clearing the cart, and creating the payment record. These operations are wrapped in a database transaction (<code>DB::transaction()</code>) so that if any operation fails, all changes are rolled back. This prevents partial orders where stock is decremented but no order is created, or where a payment is recorded but no order exists.</li>
+    <li><strong>Payment records track complete audit trail with gateway references:</strong> Each payment record stores the gateway transaction ID, the amount processed, the gateway used, timestamps for each status change, and the user who performed the action. This provides a complete audit trail for financial reconciliation, dispute resolution, and fraud investigation.</li>
 </ul>
 </div>
 
@@ -493,8 +565,10 @@ Services Layer:
 <div class="chapter page-break" id="ch10">
 <h2>10. TAM / UTAUT Integration</h2>
 
+<p>Technology acceptance theories explain why users adopt or reject new technologies. For an e-commerce platform, understanding these factors is critical because even the most secure system will fail if users find it difficult to use or do not see its value. This section explains how the platform implements the key constructs of the Technology Acceptance Model (TAM) and the Unified Theory of Acceptance and Use of Technology (UTAUT).</p>
+
 <h3>10.1 Technology Acceptance Model (TAM)</h3>
-<p>The application is designed following the Technology Acceptance Model (TAM), focusing on two key constructs:</p>
+<p>Developed by Fred Davis in 1989, TAM is one of the most widely used models in information systems research. It proposes that two primary factors determine technology acceptance: perceived usefulness (the degree to which a person believes that using the system will enhance their performance) and perceived ease of use (the degree to which a person believes that using the system will be free of effort). The application is designed following the Technology Acceptance Model (TAM), focusing on these two key constructs:</p>
 
 <h4>a) Perceived Usefulness (PU)</h4>
 <p>The application helps customers complete shopping activities efficiently:</p>
@@ -517,7 +591,7 @@ Services Layer:
 </ul>
 
 <h3>10.2 Unified Theory of Acceptance and Use of Technology (UTAUT)</h3>
-<p>UTAUT constructs are also addressed:</p>
+<p>Proposed by Venkatesh et al. in 2003, UTAUT synthesizes eight prominent technology acceptance models into a unified framework with four core determinants of usage intention and behavior. UTAUT provides a more comprehensive lens than TAM alone because it incorporates social and organizational factors that influence technology adoption. Each construct is addressed in the platform design:</p>
 
 <h4>a) Performance Expectancy</h4>
 <ul>
@@ -709,18 +783,20 @@ php artisan serve  # Server starts on http://127.0.0.1:8000
 <h2>14. Conclusion &amp; Recommendations</h2>
 
 <h3>14.1 Conclusion</h3>
-<p>The SmartTrade Africa Ltd Secure E-Commerce Platform has been successfully developed as a comprehensive solution addressing the trust and security challenges faced by modern e-commerce businesses. The application integrates:</p>
+<p>The SmartTrade Africa Ltd Secure E-Commerce Platform has been successfully developed as a comprehensive solution addressing the trust and security challenges faced by modern e-commerce businesses. The platform demonstrates that security and usability are not competing priorities — when properly designed, security features can enhance the user experience by providing peace of mind and reducing friction through technologies like biometric authentication.</p>
+
+<p>The application successfully integrates six key technology and business domains:</p>
 
 <ul>
-    <li><strong>Trusted Computing Platform (TCP)</strong> concepts including secure session management, device trust verification, secure token handling, and credential protection</li>
-    <li><strong>WebAuthn/FIDO2 Biometric Authentication</strong> for phishing-resistant fingerprint-based login</li>
-    <li><strong>Multi-Gateway Payment Integration</strong> with Stripe, PayPal, and Mock payment processing</li>
-    <li><strong>Trust Management Principles</strong> through visible trust indicators, transparent policies, and customer reviews</li>
-    <li><strong>TAM/UTAUT Concepts</strong> ensuring the platform is perceived as useful, easy to use, and aligned with user expectations</li>
-    <li><strong>Comprehensive Security</strong> including CSRF protection, XSS prevention, SQL injection prevention, bcrypt hashing, and input validation</li>
+    <li><strong>Trusted Computing Platform (TCP)</strong> concepts including secure session management (database-backed sessions with 120-minute timeout and IP/agent tracking), device trust verification (WebAuthn credential binding to specific devices), secure token handling (CSRF tokens, signed URLs, password reset tokens, biometric setup tokens), and credential protection (bcrypt hashing, no plain-text secrets). These TCP concepts, originally developed for hardware-rooted trust in enterprise computing, have been effectively adapted to the web application context.</li>
+    <li><strong>WebAuthn/FIDO2 Biometric Authentication</strong> for phishing-resistant fingerprint-based login. The implementation uses asymmetric cryptography where the private key never leaves the user's device, eliminating the risk of credential theft through server breaches or phishing attacks. The counter-based clone detection mechanism provides additional protection against credential duplication.</li>
+    <li><strong>Multi-Gateway Payment Integration</strong> with Stripe, PayPal, and Mock payment processing using the Strategy Pattern. The architectural design allows new gateways (such as Flutterwave for African mobile money) to be added by implementing a single interface, ensuring the platform can adapt to evolving payment landscape requirements without code refactoring.</li>
+    <li><strong>Trust Management Principles</strong> through visible trust indicators (Fingerprint Verified, Secure Payment, Trusted Session badges in the navigation bar), transparent policies (Privacy, Trust, Terms, Refund pages), customer reviews with star ratings, activity history logging, and database notifications for all critical events.</li>
+    <li><strong>TAM/UTAUT Concepts</strong> ensuring the platform is perceived as useful (fast checkout, quick payment confirmation, efficient product search, helpful notifications) and easy to use (clear navigation, simple registration, one-tap fingerprint login, responsive design, consistent interface). The UTAUT constructs of performance expectancy, effort expectancy, social influence, and facilitating conditions are all explicitly addressed in the platform design.</li>
+    <li><strong>Comprehensive Security</strong> following OWASP best practices including CSRF protection on every form, XSS prevention through automatic output escaping, SQL injection prevention via Eloquent ORM parameterized queries, bcrypt password hashing (12 rounds), input validation on all inputs, mass assignment protection through $fillable properties, rate limiting on authentication attempts, session regeneration after login, and path traversal prevention through the Storage facade.</li>
 </ul>
 
-<p>The application successfully demonstrates how combining technical security measures with trust-building features creates a platform that customers can confidently use for online transactions.</p>
+<p>The application successfully demonstrates how combining technical security measures with trust-building features creates a platform that customers can confidently use for online transactions. By making security visible and transparent, the platform addresses the fundamental trust paradox of e-commerce: users must provide sensitive information before they have established trust in the platform, so the platform must demonstrate its trustworthiness proactively.</p>
 
 <h3>14.2 Recommendations</h3>
 <ol>
@@ -765,6 +841,9 @@ php artisan serve  # Server starts on http://127.0.0.1:8000
     <li>Trusted Computing Group. "Trusted Platform Module (TPM) Summary." https://trustedcomputinggroup.org/resource/tpm-summary/</li>
     <li>OAuth 2.0 Authorization Framework. RFC 6749. https://datatracker.ietf.org/doc/html/rfc6749</li>
     <li>OWASP Foundation. "OWASP Top Ten Web Application Security Risks." https://owasp.org/www-project-top-ten/</li>
+    <li>NIST. "Digital Identity Guidelines." SP 800-63-3. https://pages.nist.gov/800-63-3/</li>
+    <li>Gefen, D., Karahanna, E., &amp; Straub, D. W. (2003). "Trust and TAM in online shopping: An integrated model." <em>MIS Quarterly</em>, 27(1), 51-90.</li>
+    <li>McKnight, D. H., Choudhury, V., &amp; Kacmar, C. (2002). "Developing and validating trust measures for e-commerce: An integrative typology." <em>Information Systems Research</em>, 13(3), 334-359.</li>
 </ol>
 </div>
 
