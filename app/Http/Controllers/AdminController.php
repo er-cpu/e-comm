@@ -26,9 +26,12 @@ class AdminController extends Controller
         $totalUsers = User::count();
         $totalRevenue = Order::where('status', '!=', 'pending')->sum('total_price');
         $recentOrders = Order::with('user')->latest()->take(5)->get();
+        $pendingMessages = SupportMessage::where('status', 'open')->latest()->take(5)->get();
+        $pendingMessagesCount = SupportMessage::where('status', 'open')->count();
 
         return view('admin.dashboard', compact(
-            'totalProducts', 'totalOrders', 'totalUsers', 'totalRevenue', 'recentOrders'
+            'totalProducts', 'totalOrders', 'totalUsers', 'totalRevenue',
+            'recentOrders', 'pendingMessages', 'pendingMessagesCount'
         ));
     }
 

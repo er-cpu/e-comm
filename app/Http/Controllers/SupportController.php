@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\SupportMessage;
+use App\Models\User;
+use App\Notifications\NewSupportMessage;
 use Illuminate\Http\Request;
 
 class SupportController extends Controller
@@ -17,7 +19,7 @@ class SupportController extends Controller
             'type' => 'required|in:inquiry,complaint,feedback,other',
         ]);
 
-        SupportMessage::create([
+        $message = SupportMessage::create([
             'user_id' => auth()->id(),
             'name' => $request->name,
             'email' => $request->email,
@@ -26,6 +28,8 @@ class SupportController extends Controller
             'type' => $request->type,
             'status' => 'open',
         ]);
+
+        User::where('role', 'admin')->each(fn($admin) => $admin->notify(new NewSupportMessage($message)));
 
         return redirect()->route('contact')->with('success', 'Your message has been sent. We will respond within 24 hours.');
     }

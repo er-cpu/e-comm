@@ -114,8 +114,13 @@
             {{-- Customer Support --}}
             <h3 class="text-sm font-semibold text-gray-700 mb-3 mt-8">Customer Support</h3>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                <a href="{{ route('admin.support.messages') }}" class="bg-white rounded-lg shadow p-5 text-center hover:bg-gray-50 hover-lift">
-                    <p class="text-base font-semibold text-indigo-600">Support Messages</p>
+                <a href="{{ route('admin.support.messages') }}" class="bg-white rounded-lg shadow p-5 text-center hover:bg-gray-50 hover-lift position-relative">
+                    <p class="text-base font-semibold text-indigo-600">
+                        Support Messages
+                        @if($pendingMessagesCount > 0)
+                            <span class="badge bg-danger ms-1">{{ $pendingMessagesCount }}</span>
+                        @endif
+                    </p>
                     <p class="text-xs text-gray-500 mt-1">Respond to customer inquiries</p>
                 </a>
                 <a href="{{ route('admin.support.messages') }}?type=complaint" class="bg-white rounded-lg shadow p-5 text-center hover:bg-gray-50 hover-lift">
@@ -123,6 +128,37 @@
                     <p class="text-xs text-gray-500 mt-1">Manage complaints &amp; feedback</p>
                 </a>
             </div>
+
+            @if($pendingMessages->count() > 0)
+                <div class="bg-white rounded-lg shadow p-6 mb-6">
+                    <h4 class="text-sm font-semibold text-gray-700 mb-3">
+                        Pending Messages
+                        <span class="badge bg-warning text-dark ms-1">{{ $pendingMessagesCount }} open</span>
+                    </h4>
+                    <div class="divide-y divide-gray-200">
+                        @foreach($pendingMessages as $msg)
+                            <div class="py-3 d-flex justify-content-between align-items-start gap-3">
+                                <div class="min-w-0 flex-grow-1">
+                                    <p class="text-sm fw-semibold mb-0">
+                                        <span class="badge bg-secondary me-1">{{ ucfirst($msg->type) }}</span>
+                                        {{ $msg->subject }}
+                                    </p>
+                                    <p class="text-xs text-gray-500 mb-0 mt-1">
+                                        From: {{ $msg->name }} ({{ $msg->email }})
+                                        &middot; {{ $msg->created_at->diffForHumans() }}
+                                    </p>
+                                </div>
+                                <a href="{{ route('admin.support.messages.show', $msg) }}" class="btn btn-sm btn-outline-primary flex-shrink-0">View</a>
+                            </div>
+                        @endforeach
+                    </div>
+                    @if($pendingMessagesCount > 5)
+                        <div class="text-center mt-3">
+                            <a href="{{ route('admin.support.messages') }}" class="text-sm text-indigo-600">View all {{ $pendingMessagesCount }} messages</a>
+                        </div>
+                    @endif
+                </div>
+            @endif
         </div>
     </div>
 </x-app-layout>
