@@ -6,13 +6,24 @@
     <div class="py-12">
         <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white rounded-lg shadow p-6">
+                @if($errors->any())
+                    <div class="mb-4 rounded border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-700">
+                        <p class="font-semibold mb-1">Product was not created. Please fix the following:</p>
+                        <ul class="list-disc ps-5 mb-0">
+                            @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
                 <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700">Name</label>
                         <input type="text" name="name" value="{{ old('name') }}" class="mt-1 block w-full rounded border-gray-300" required>
-                        @error('name') <p class="text-red-500 text-xs mt-1">{{ session($message) }}</p> @enderror
+                        @error('name') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     <div class="mb-4">
@@ -34,24 +45,24 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Price (Tsh)</label>
                             <input type="number" name="price" value="{{ old('price') }}" step="0.01" min="0" class="mt-1 block w-full rounded border-gray-300" required>
-                            @error('price') <p class="text-red-500 text-xs mt-1">{{ session($message) }}</p> @enderror
+                            @error('price') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Discount %</label>
                             <input type="number" name="discount_percent" value="{{ old('discount_percent', 0) }}" min="0" max="100" class="mt-1 block w-full rounded border-gray-300">
-                            @error('discount_percent') <p class="text-red-500 text-xs mt-1">{{ session($message) }}</p> @enderror
+                            @error('discount_percent') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Stock</label>
                             <input type="number" name="stock" value="{{ old('stock') }}" min="0" class="mt-1 block w-full rounded border-gray-300" required>
-                            @error('stock') <p class="text-red-500 text-xs mt-1">{{ session($message) }}</p> @enderror
+                            @error('stock') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                         </div>
                     </div>
 
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700">Image</label>
-                        <input type="file" name="image" accept="image/*" class="mt-1 block w-full">
-                        @error('image') <p class="text-red-500 text-xs mt-1">{{ session($message) }}</p> @enderror
+                        <input type="file" name="image" accept="image/jpeg,image/png,image/gif,image/webp" class="mt-1 block w-full">
+                        @error('image') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     <div class="flex gap-4">

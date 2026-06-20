@@ -8,15 +8,22 @@
                 <h1 class="text-3xl font-bold mb-6">Privacy Policy</h1>
 
                 <p class="text-gray-700 mb-4">
-                    SmartTrade Secure Platform respects user privacy and ensures that all personal data is protected using secure encryption and authentication systems.
+                    SmartTrade Africa protects the information you share with us while using the platform. We only collect details that help us create your account,
+                    process orders, support secure login, and improve your shopping experience.
                 </p>
 
-                <ul class="list-disc list-inside text-gray-700 space-y-2">
-                    <li>User passwords are hashed using bcrypt</li>
-                    <li>No payment data is stored in the system</li>
-                    <li>Personal data is used only for authentication and order processing</li>
-                    <li>No data is shared with third parties</li>
+                <ul class="list-disc list-inside text-gray-700 space-y-2 mb-6">
+                    <li>Your password is protected using secure hashing and is never stored as plain text.</li>
+                    <li>Biometric login is handled securely, and fingerprint data remains on your device.</li>
+                    <li>Payment details are processed through payment providers and are not stored by SmartTrade Africa.</li>
+                    <li>Your personal information is used for account access, order processing, delivery support, and customer service.</li>
+                    <li>We do not sell your personal data or share it for unrelated marketing purposes.</li>
                 </ul>
+
+                <p class="text-gray-700">
+                    We may keep basic activity records, such as login attempts and order actions, to help detect suspicious activity and protect your account.
+                    You are responsible for keeping your login details private and contacting support if you notice unusual account activity.
+                </p>
             </div>
         </div>
     </div>

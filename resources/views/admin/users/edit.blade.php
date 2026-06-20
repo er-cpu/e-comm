@@ -31,7 +31,7 @@
 
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700">Phone</label>
-                        <input type="text" name="phone" value="{{ old('phone', $user->phone) }}" placeholder="0689045666 or +255689045666" class="mt-1 block w-full rounded border-gray-300">
+                        <input type="text" name="phone" value="{{ old('phone') }}" class="mt-1 block w-full rounded border-gray-300">
                         @error('phone') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 
@@ -45,7 +45,7 @@
                     </div>
 
                     <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700">New Password <span class="text-gray-400 font-normal">(leave blank to keep current)</span></label>
+                        <label class="block text-sm font-medium text-gray-700">New Password</label>
                         <input type="password" name="password" class="mt-1 block w-full rounded border-gray-300" autocomplete="new-password">
                         @error('password') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>

@@ -19,8 +19,7 @@
 
                 <ul class="text-gray-700 space-y-1 mb-4">
                     <li><strong>Name:</strong> Francis Bamugileki</li>
-                    <li><strong>Email:</strong> francis@hesmb.com</li>
-                    <li><strong>Phone:</strong> +255 689 045 666</li>
+                    <li><strong>Phone:</strong> +255 700 600 500</li>
                 </ul>
 
                 <h3 class="text-xl font-semibold mt-6 mb-2">Location</h3>

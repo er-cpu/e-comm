@@ -9,7 +9,7 @@
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+        <link href="https://fonts.bunny.net/css?family=syne:400,500,600,700,800&display=swap" rel="stylesheet" />
 
         <!-- Bootstrap 5 -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -24,13 +24,16 @@
             @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         </style>
     </head>
-    <body class="font-sans text-gray-900 antialiased">
+    <body class="font-sans text-gray-900 antialiased" style="font-family: 'Syne', sans-serif;">
         @include('layouts.navigation')
 
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-24 pb-12 bg-gray-100">
             <div>
-                <a href="/">
-                    <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
+                <a href="/" class="inline-flex items-center justify-center w-20 h-20 rounded-3 shadow-sm text-white" style="background-color: #1a4d35;" aria-label="SmartTrade Africa shopping bag">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                        <path d="M8 1a2.5 2.5 0 0 0-2.5 2.5V4h5v-.5A2.5 2.5 0 0 0 8 1m3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1.57a.5.5 0 0 0-.49.402l-1 5A.5.5 0 0 0 .57 10h14.86a.5.5 0 0 0 .49-.598l-1-5A.5.5 0 0 0 14.43 4z"/>
+                        <path d="M.57 11a.5.5 0 0 0-.49.598l.7 3.5A.5.5 0 0 0 1.27 15h13.46a.5.5 0 0 0 .49-.402l.7-3.5A.5.5 0 0 0 15.43 11z"/>
+                    </svg>
                 </a>
             </div>
 

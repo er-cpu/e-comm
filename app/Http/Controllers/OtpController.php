@@ -11,6 +11,10 @@ class OtpController extends Controller
 {
     public function send(Request $request)
     {
+        if ($request->filled('phone')) {
+            $request->merge(['phone' => preg_replace('/\s+/', '', $request->phone)]);
+        }
+
         $request->validate([
             'phone' => ['required', 'string', 'regex:/^(0|\+255)\d{9}$/'],
         ]);

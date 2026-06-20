@@ -61,7 +61,7 @@ body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #1e293b; li
         <strong>Course:</strong> Trust Management in E-Commerce (428)<br>
         <strong>Assignment Type:</strong> Group Project<br>
         <strong>Submission Deadline:</strong> 22/06/2026<br><br>
-        <strong>Developed by:</strong> HESMB Team<br>
+        <strong>Developed by:</strong> NERST Team<br>
         <strong>Platform:</strong> Laravel 12 + WebAuthn + Stripe/PayPal/Mock Payment APIs<br>
         <strong>Server Running At:</strong> <a href="http://127.0.0.1:8000" style="color:#93c5fd;">http://127.0.0.1:8000</a>
     </div>
@@ -342,7 +342,7 @@ Services Layer:
 
 <p>Unlike traditional password-based authentication, WebAuthn uses asymmetric (public-key) cryptography. When a user registers a biometric credential, their device generates a public-private key pair. The private key never leaves the device — it is stored in secure hardware (TPM on Windows, Secure Enclave on Apple devices, TrustZone on Android). The public key is sent to the server and stored in the database. During authentication, the server sends a challenge (random bytes), and the device signs this challenge with the private key. The server verifies the signature using the stored public key. This means that even if an attacker gains access to the server database, they cannot impersonate the user because the private key never leaves the user's device and cannot be extracted from the secure hardware.</p>
 
-<p>WebAuthn is fundamentally phishing-resistant because the authentication response is scoped to the specific origin (domain). A WebAuthn credential registered for <code>hesmb.com</code> will not work on <code>hesmb-login.com</code> because the browser validates the origin as part of the authentication ceremony. This eliminates the entire class of phishing attacks that plague password-based authentication.</p>
+<p>WebAuthn is fundamentally phishing-resistant because the authentication response is scoped to the specific origin (domain). A WebAuthn credential registered for <code>nerst.com</code> will not work on <code>nerst-login.com</code> because the browser validates the origin as part of the authentication ceremony. This eliminates the entire class of phishing attacks that plague password-based authentication.</p>
 
 <h3>6.2 Key Features</h3>
 <ul>
@@ -633,7 +633,7 @@ Services Layer:
 
 <div class="screenshot-box">
     <div class="label">[SCREENSHOT: Admin Dashboard]</div>
-    <div class="desc">Log in as admin@hesmb.com / password and navigate to http://127.0.0.1:8000/admin/dashboard to see the full admin panel with stats, recent orders, management links, analytics, and support sections.</div>
+    <div class="desc">Log in as admin@nerst.com / password and navigate to http://127.0.0.1:8000/admin/dashboard to see the full admin panel with stats, recent orders, management links, analytics, and support sections.</div>
 </div>
 
 <h3>11.2 Product Management (Admin)</h3>
@@ -720,8 +720,8 @@ Services Layer:
     <div class="desc">
         1. Open Chrome/Firefox and navigate to http://127.0.0.1:8000<br>
         2. For authenticated screenshots, log in with:<br>
-           &nbsp;&nbsp;<strong>Admin:</strong> admin@hesmb.com / password<br>
-           &nbsp;&nbsp;<strong>User:</strong> francis@hesmb.com / password<br>
+           &nbsp;&nbsp;<strong>Admin:</strong> admin@nerst.com / password<br>
+           &nbsp;&nbsp;<strong>User:</strong> francis@nerst.com / password<br>
         3. Use Snipping Tool, Windows+Shift+S, or browser DevTools screenshot<br>
         4. Capture full-page screenshots where possible (use browser DevTools)<br>
         5. Save all screenshots numbered as per the table above
@@ -736,8 +736,8 @@ Services Layer:
 <h3>13.1 Test Accounts</h3>
 <table>
 <tr><th>Role</th><th>Email</th><th>Password</th></tr>
-<tr><td>Admin</td><td>admin@hesmb.com</td><td>password</td></tr>
-<tr><td>User 1</td><td>francis@hesmb.com</td><td>password</td></tr>
+<tr><td>Admin</td><td>admin@nerst.com</td><td>password</td></tr>
+<tr><td>User 1</td><td>francis@nerst.com</td><td>password</td></tr>
 <tr><td>User 2</td><td>jane@example.com</td><td>password</td></tr>
 <tr><td>User 3</td><td>peter@example.com</td><td>password</td></tr>
 </table>

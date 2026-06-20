@@ -24,7 +24,7 @@
 
                 <div class="mb-4">
                     <x-input-label for="fp_email" :value="__('Email')" />
-                    <x-text-input id="fp_email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required placeholder="francis@hesmb.com" />
+                    <x-text-input id="fp_email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required placeholder="Enter your email" />
                     <x-input-error :messages="$errors->get('email')" class="mt-2" />
                 </div>
 

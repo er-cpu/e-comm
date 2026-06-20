@@ -1,3 +1,140 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        overflow-x: hidden;
+        background: #f3f4f6;
+    }
+
+    img,
+    video,
+    canvas,
+    svg {
+        max-width: 100%;
+    }
+}
+
+@layer components {
+    .navbar-toggler {
+        color: #ffffff;
+    }
+
+    .navbar-toggler:focus {
+        box-shadow: 0 0 0 0.15rem rgba(255, 255, 255, 0.35);
+    }
+
+    .navbar-toggler-icon {
+        filter: invert(1) grayscale(1) brightness(2);
+    }
+
+    .offcanvas .nav-link {
+        color: rgba(255, 255, 255, 0.88);
+        border-radius: 0.35rem;
+        margin: 0.1rem 0.75rem;
+    }
+
+    .offcanvas .nav-link:hover,
+    .offcanvas .nav-link.active {
+        color: #ffffff;
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    table {
+        min-width: 720px;
+    }
+
+    .bg-white:has(> table),
+    .overflow-hidden:has(> table) {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    input,
+    select,
+    textarea,
+    button {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 640px) {
+    .main-content {
+        padding-top: 64px;
+    }
+
+    .main-content header > div {
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+    }
+
+    .main-content main > .py-12 {
+        padding-top: 1.5rem;
+        padding-bottom: 1.5rem;
+    }
+
+    .main-content main > .py-12 > div,
+    .main-content main > div > [class*="max-w-"] {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .navbar-brand span {
+        font-size: 1.15rem !important;
+    }
+
+    .toast {
+        max-width: calc(100vw - 2rem);
+    }
+
+    .btn,
+    button,
+    input,
+    select,
+    textarea {
+        font-size: 0.95rem;
+    }
+
+    .grid {
+        gap: 1rem;
+    }
+
+    .grid-cols-2,
+    .grid-cols-3,
+    .grid-cols-4,
+    .grid-cols-5 {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+    }
+
+    .product-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .product-card-image {
+        aspect-ratio: 1 / 1;
+        height: auto;
+    }
+
+    .p-8 {
+        padding: 1.25rem;
+    }
+
+    .p-6 {
+        padding: 1rem;
+    }
+
+    .text-4xl {
+        font-size: 2rem;
+        line-height: 2.25rem;
+    }
+
+    .text-3xl {
+        font-size: 1.65rem;
+        line-height: 2rem;
+    }
+}

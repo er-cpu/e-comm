@@ -23,6 +23,10 @@ class RegisteredUserController extends Controller
 
     public function store(Request $request): mixed
     {
+        if ($request->filled('phone')) {
+            $request->merge(['phone' => preg_replace('/\s+/', '', $request->phone)]);
+        }
+
         $request->validate([
             'first_name' => ['required_without:name', 'nullable', 'string', 'max:255'],
             'last_name' => ['required_without:name', 'nullable', 'string', 'max:255'],

@@ -10,15 +10,18 @@
                     </div>
                 @endauth
             </div>
-            <form method="GET" class="flex gap-2">
-                <select name="category" class="rounded border-gray-300 text-sm" onchange="this.form.submit()">
+            <form method="GET" class="flex flex-wrap gap-2 w-full sm:w-auto">
+                <select name="category" class="rounded border-gray-300 text-sm text-gray-900 bg-white flex-1 min-w-[10rem] sm:flex-none" onchange="this.form.submit()">
                     <option value="">All Categories</option>
                     @foreach($categories as $category)
                         <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
                     @endforeach
                 </select>
-                <input type="text" name="search" placeholder="Search products..." value="{{ request('search') }}" class="rounded border-gray-300 text-sm">
-                <button type="submit" class="bg-indigo-500 text-white px-3 py-1 rounded text-sm">Search</button>
+                <input type="text" name="search" placeholder="Search products..." value="{{ request('search') }}" class="rounded border-gray-300 text-sm text-gray-900 placeholder-gray-700 bg-white flex-1 min-w-[11rem]">
+                <button type="submit" class="bg-indigo-500 text-white px-3 py-2 rounded text-sm">Search</button>
+                @if(request()->filled('category') || request()->filled('search'))
+                    <a href="{{ route('products.index') }}" class="bg-gray-500 text-white px-3 py-2 rounded text-sm text-decoration-none">Clear</a>
+                @endif
             </form>
         </div>
     </x-slot>
@@ -38,18 +41,18 @@
                 </div>
             @endif
 
-            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 fade-in">
+            <div class="product-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 fade-in">
                 @forelse($products as $product)
                     <div class="bg-white rounded-lg shadow overflow-hidden hover-lift" style="transition-delay: {{ $loop->index * 0.03 }}s;">
                         @if($product->image)
-                            <img src="{{ Storage::url($product->image) }}" alt="{{ $product->name }}" class="w-full h-48 object-cover">
+                            <img src="{{ Storage::url($product->image) }}" alt="{{ $product->name }}" class="product-card-image w-full h-32 sm:h-48 object-cover">
                         @else
-                            <div class="w-full h-48 bg-gray-200 flex items-center justify-center text-gray-400">No Image</div>
+                            <div class="product-card-image w-full h-32 sm:h-48 bg-gray-200 flex items-center justify-center text-gray-400 text-xs sm:text-base">No Image</div>
                         @endif
-                        <div class="p-4">
-                            <h3 class="font-semibold text-lg">{{ $product->name }}</h3>
+                        <div class="p-3 sm:p-4">
+                            <h3 class="font-semibold text-sm sm:text-lg leading-snug">{{ $product->name }}</h3>
                             @if($product->category)
-                                <p class="text-sm text-gray-500">{{ $product->category->name }}</p>
+                                <p class="text-xs sm:text-sm text-gray-500">{{ $product->category->name }}</p>
                             @endif
                             @php $avg = $product->ratings->avg('rating'); @endphp
                             @if($avg)
@@ -62,32 +65,32 @@
                                     <span class="text-xs text-gray-500">({{ number_format($avg, 1) }})</span>
                                 </div>
                             @endif
-                            <p class="text-gray-600 text-sm mt-1">{{ Str::limit($product->description, 80) }}</p>
-                            <div class="flex justify-between items-center mt-3">
+                            <p class="hidden sm:block text-gray-600 text-sm mt-1">{{ Str::limit($product->description, 80) }}</p>
+                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mt-2 sm:mt-3 gap-1">
                                 <div>
-                                    <span class="text-xl font-bold text-indigo-600">Tsh {{ number_format($product->currentPrice(), 0) }}</span>
+                                    <span class="text-sm sm:text-xl font-bold text-indigo-600">Tsh {{ number_format($product->currentPrice(), 0) }}</span>
                                     @if($product->hasDiscount())
-                                        <span class="text-sm text-gray-400 line-through ml-1">Tsh {{ number_format($product->price, 0) }}</span>
+                                        <span class="text-xs sm:text-sm text-gray-400 line-through ml-1">Tsh {{ number_format($product->price, 0) }}</span>
                                         <span class="text-xs text-red-500 font-semibold ml-1">-{{ $product->discount_percent }}%</span>
                                     @endif
                                 </div>
-                                <span class="text-sm {{ $product->stock > 0 ? 'text-green-600' : 'text-red-600' }}">
+                                <span class="text-xs sm:text-sm {{ $product->stock > 0 ? 'text-green-600' : 'text-red-600' }}">
                                     {{ $product->stock > 0 ? "In Stock ($product->stock)" : 'Out of Stock' }}
                                 </span>
                             </div>
-                            <div class="mt-3 flex gap-2">
-                                <a href="{{ route('products.show', $product) }}" class="flex-1 text-center bg-indigo-500 text-white px-3 py-2 rounded text-sm hover:bg-indigo-600">View</a>
+                            <div class="mt-2 sm:mt-3 flex flex-col sm:flex-row gap-1.5 sm:gap-2">
+                                <a href="{{ route('products.show', $product) }}" class="flex-1 text-center bg-indigo-500 text-white px-2 sm:px-3 py-1.5 sm:py-2 rounded text-xs sm:text-sm hover:bg-indigo-600">View</a>
                                 @auth
                                     <form action="{{ route('cart.store') }}" method="POST" class="flex-1">
                                         @csrf
                                         <input type="hidden" name="product_id" value="{{ $product->id }}">
                                         <input type="hidden" name="quantity" value="1">
-                                        <button type="submit" class="w-full bg-green-500 text-white px-3 py-2 rounded text-sm hover:bg-green-600" {{ $product->stock < 1 ? 'disabled' : '' }}>Add to Cart</button>
+                                        <button type="submit" class="w-full bg-green-500 text-white px-2 sm:px-3 py-1.5 sm:py-2 rounded text-xs sm:text-sm hover:bg-green-600" {{ $product->stock < 1 ? 'disabled' : '' }}>Add</button>
                                     </form>
                                     <form action="{{ route('wishlist.store') }}" method="POST">
                                         @csrf
                                         <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                        <button type="submit" class="bg-pink-500 text-white px-3 py-2 rounded text-sm hover:bg-pink-600">Wish</button>
+                                        <button type="submit" class="w-full bg-pink-500 text-white px-2 sm:px-3 py-1.5 sm:py-2 rounded text-xs sm:text-sm hover:bg-pink-600">Wish</button>
                                     </form>
                                 @endauth
                             </div>

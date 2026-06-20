@@ -56,7 +56,7 @@ class AdminController extends Controller
             'discount_percent' => 'nullable|integer|min:0|max:100',
             'stock' => 'required|integer|min:0',
             'category_id' => 'nullable|exists:categories,id',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
         ]);
 
         $data = $request->only(['name', 'description', 'price', 'discount_percent', 'stock', 'category_id']);
@@ -85,7 +85,7 @@ class AdminController extends Controller
             'discount_percent' => 'nullable|integer|min:0|max:100',
             'stock' => 'required|integer|min:0',
             'category_id' => 'nullable|exists:categories,id',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
         ]);
 
         $data = $request->only(['name', 'description', 'price', 'discount_percent', 'stock', 'category_id']);
@@ -188,6 +188,10 @@ class AdminController extends Controller
 
     public function updateUser(Request $request, User $user)
     {
+        if ($request->filled('phone')) {
+            $request->merge(['phone' => preg_replace('/\s+/', '', $request->phone)]);
+        }
+
         $request->validate([
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
@@ -197,7 +201,11 @@ class AdminController extends Controller
             'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        $data = $request->only(['first_name', 'last_name', 'email', 'phone', 'role']);
+        $data = $request->only(['first_name', 'last_name', 'email', 'role']);
+
+        if ($request->filled('phone')) {
+            $data['phone'] = $request->phone;
+        }
 
         if ($request->filled('password')) {
             $data['password'] = Hash::make($request->password);

@@ -37,7 +37,7 @@
             <p class="text-xs text-gray-500 mb-3">Verify your phone number with an OTP as backup authentication.</p>
 
             <div class="flex gap-2 mb-3">
-                <input type="text" id="otpPhoneInput" placeholder="0689045666 or +255689045666"
+                <input type="text" id="otpPhoneInput" placeholder="+255 700 600 500"
                        class="flex-1 border border-gray-300 rounded px-3 py-2 text-sm focus:ring-indigo-500 focus:border-indigo-500"
                        value="{{ Auth::user()->phone ?? '' }}">
                 <button type="button" id="sendOtpBtn" onclick="sendOtp()"
@@ -81,13 +81,13 @@
         }
 
         async function sendOtp() {
-            const phone = document.getElementById('otpPhoneInput').value.trim();
+            const phone = document.getElementById('otpPhoneInput').value.trim().replace(/\s+/g, '');
             const btn = document.getElementById('sendOtpBtn');
             const status = document.getElementById('otpStatus');
             status.classList.add('hidden');
 
             if (!phone.match(/^(0|\+255)\d{9}$/)) {
-                showOtpStatus('Invalid phone number. Use format: 0689045666 or +255689045666', 'error');
+                showOtpStatus('Invalid phone number. Use format: +255 700 600 500', 'error');
                 return;
             }
 
