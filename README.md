@@ -284,7 +284,7 @@ For technical support or issues, please contact the development team or open an 
 
 ---
 
-**Built by:** CniseGroup3
+**Built by:** CniseGroup3 
 **Platform:** SafeHome E-Commerce System  
 **Version:** 1.0.0  
 **Last Updated:** June 2026
