@@ -1,10 +1,10 @@
-# HESMB - SmartTrade Africa E-Commerce Platform
+# SafeHome - SmartTrade Africa E-Commerce Platform
 
 A modern, full-featured e-commerce platform built for **SmartTrade Africa Ltd**, a Tanzanian-based online marketplace. Built with Laravel 12 and modern frontend tooling.
 
 ## Project Overview
 
-HESMB is a production-ready e-commerce solution with comprehensive customer, admin, and security features. The platform supports multiple payment gateways, biometric authentication, OTP verification, real-time notifications, and complete order management.
+SafeHome is a production-ready e-commerce solution with comprehensive customer, admin, and security features. The platform supports multiple payment gateways, biometric authentication, OTP verification, real-time notifications, and complete order management.
 
 ## Features
 
@@ -68,8 +68,8 @@ HESMB is a production-ready e-commerce solution with comprehensive customer, adm
 
 ```bash
 # Clone the repository
-git clone https://github.com/bamugileki/SECURE_E-COMERCE_WEBSITE.git
-cd SECURE_E-COMERCE_WEBSITE
+git clone https://github.com/er-cpu/e-comm.git
+cd e-comm
 
 # Install PHP dependencies
 composer install
@@ -284,7 +284,7 @@ For technical support or issues, please contact the development team or open an 
 
 ---
 
-**Built by:** SmartTrade Africa Ltd  
-**Platform:** HESMB E-Commerce System  
+**Built by:** CniseGroup3
+**Platform:** SafeHome E-Commerce System  
 **Version:** 1.0.0  
 **Last Updated:** June 2026
